@@ -57,8 +57,7 @@ and pretty (node: INode) =
 [<EntryPoint>]
 let main argv =    
     let document =
-        //argv.[0] 
-        "C:/Users/User/source/repos/HtmlToFSharp/sample.html"
+        argv.[0]
         |> File.ReadAllText
         |> HtmlParser().ParseDocument
 
