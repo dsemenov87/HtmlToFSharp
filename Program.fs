@@ -1,8 +1,8 @@
 ﻿open AngleSharp.Html.Parser
 open AngleSharp.Dom
 open System
-open System.IO
 open PPrint
+open System.Text
 
 let prettySeq (l, r) separator toDoc xs =
     if Seq.isEmpty xs then
@@ -53,16 +53,19 @@ and pretty (node: INode) =
             then str |> sprintf "text \"%s\"" |> txt |> Some
             else None
     
-
 [<EntryPoint>]
-let main argv =    
-    let document =
-        argv.[0]
-        |> File.ReadAllText
+let main _ =  
+    Console.InputEncoding <- Encoding.UTF8
+    Console.OutputEncoding <- Encoding.UTF8
+    
+    let document=
+        Seq.initInfinite (fun _ -> Console.In.ReadLine())
+        |> Seq.takeWhile ((<>) null)
+        |> String.concat "\n"
         |> HtmlParser().ParseDocument
 
     document.QuerySelector("BODY").ChildNodes.[0]
     |> pretty
-    |> Option.iter (render (Some 80) >> printfn "%s")
+    |> Option.iter (render (Some 80) >> Console.Out.Write)
 
     0
